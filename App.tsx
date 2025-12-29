@@ -24,13 +24,15 @@ import { motion } from 'framer-motion';
 const VideoSection = ({ url, title, isFeatured = false }: { url: string; title: string; isFeatured?: boolean }) => {
   const getEmbedUrl = (url: string) => {
     try {
+      // Robust regex for YouTube IDs (supports watch?, shorts/, youtu.be/)
       const regExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
       const match = url.match(regExp);
       const videoId = (match && match[1].length === 11) ? match[1] : null;
       
       if (!videoId) return '';
-      return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+      return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&enablejsapi=1`;
     } catch (e) {
+      console.error("Video URL Error:", e);
       return '';
     }
   };
@@ -56,6 +58,7 @@ const VideoSection = ({ url, title, isFeatured = false }: { url: string; title: 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           className="absolute inset-0 w-full h-full"
+          loading="lazy"
         ></iframe>
       </div>
       <p className={`mt-8 text-center ${isFeatured ? 'text-emerald-900 text-3xl' : 'text-stone-700 text-2xl'} font-black italic tracking-tight uppercase leading-tight`}>
@@ -92,7 +95,7 @@ const App: React.FC = () => {
       }
     } else {
       navigator.clipboard.writeText(message);
-      alert('Message and link copied to clipboard! You can now paste and share on any social media platform.');
+      alert('Message and link copied to clipboard!');
     }
   };
 
@@ -356,7 +359,8 @@ const App: React.FC = () => {
   );
 };
 
-const SocialIcon = ({ href, icon, label, color }: { href: string; icon: React.ReactNode; label: string; color: string }) => (
+// Fixed SocialIcon component to satisfy TypeScript constraints on Vercel
+const SocialIcon = ({ href, icon, label, color }: { href: string; icon: React.ReactElement; label: string; color: string }) => (
   <a 
     href={href} 
     target="_blank" 
@@ -364,7 +368,7 @@ const SocialIcon = ({ href, icon, label, color }: { href: string; icon: React.Re
     className="flex flex-col items-center gap-4 group"
   >
     <div className={`p-6 bg-stone-100 text-stone-700 rounded-[1.75rem] group-hover:${color} group-hover:text-white transition-all shadow-md group-hover:shadow-2xl group-hover:-translate-y-3`}>
-      {React.cloneElement(icon as React.ReactElement, { size: 32, strokeWidth: 4 })}
+      {React.cloneElement(icon, { size: 32, strokeWidth: 4 } as any)}
     </div>
     <span className="text-[11px] font-black uppercase tracking-[0.3em] text-stone-500 group-hover:text-stone-950 transition-colors">{label}</span>
   </a>
