@@ -15,7 +15,6 @@ import {
   Youtube, 
   Target, 
   Globe,
-  Award,
   ChevronRight,
   PlayCircle,
   ShieldCheck
@@ -25,7 +24,6 @@ import { motion } from 'framer-motion';
 const VideoSection = ({ url, title, isFeatured = false }: { url: string; title: string; isFeatured?: boolean }) => {
   const getEmbedUrl = (url: string) => {
     try {
-      // Robust regex to extract 11-character YouTube ID from any format (shorts, mobile, desktop)
       const regExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
       const match = url.match(regExp);
       const videoId = (match && match[1].length === 11) ? match[1] : null;
@@ -33,7 +31,6 @@ const VideoSection = ({ url, title, isFeatured = false }: { url: string; title: 
       if (!videoId) return '';
       return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
     } catch (e) {
-      console.error("Error parsing YouTube URL:", e);
       return '';
     }
   };
@@ -45,22 +42,20 @@ const VideoSection = ({ url, title, isFeatured = false }: { url: string; title: 
   return (
     <div className={`w-full max-w-4xl mx-auto mb-20 group ${isFeatured ? 'relative' : ''}`}>
       {isFeatured && (
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-8 py-2 rounded-full text-xs font-black uppercase tracking-[0.3em] shadow-lg z-20 flex items-center gap-2">
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-8 py-2 rounded-full text-xs font-black uppercase tracking-[0.4em] shadow-lg z-20 flex items-center gap-2">
           <PlayCircle size={16} strokeWidth={3} /> Featured Mission Video
         </div>
       )}
-      {/* 
-        The padding-bottom hack (pb-[56.25%]) creates a responsive 16:9 container. 
-        We use relative/absolute positioning to ensure the iframe fills this space.
-      */}
-      <div className={`relative w-full overflow-hidden rounded-[2.5rem] shadow-2xl border-[6px] ${isFeatured ? 'border-emerald-500 shadow-emerald-200/50' : 'border-white'} transition-all duration-500 bg-stone-100`} style={{ paddingBottom: '56.25%', height: 0 }}>
+      <div 
+        className={`relative w-full rounded-[2.5rem] overflow-hidden shadow-2xl border-[6px] ${isFeatured ? 'border-emerald-500 shadow-emerald-200/50' : 'border-white'} transition-all duration-500 bg-stone-100`}
+        style={{ paddingBottom: '56.25%', height: 0 }}
+      >
         <iframe
           src={embedUrl}
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
-          className="absolute top-0 left-0 w-full h-full"
-          loading="lazy"
+          className="absolute inset-0 w-full h-full"
         ></iframe>
       </div>
       <p className={`mt-8 text-center ${isFeatured ? 'text-emerald-900 text-3xl' : 'text-stone-700 text-2xl'} font-black italic tracking-tight uppercase leading-tight`}>
@@ -103,13 +98,11 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-stone-950 font-sans selection:bg-orange-600 selection:text-white leading-relaxed">
-      {/* Dynamic Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-emerald-100/50 rounded-full blur-[140px] opacity-40"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-amber-100/50 rounded-full blur-[140px] opacity-40"></div>
       </div>
 
-      {/* Header */}
       <header className="relative z-10 pt-20 pb-12 px-6">
         <div className="container mx-auto text-center">
           <motion.div 
@@ -126,7 +119,6 @@ const App: React.FC = () => {
             <span className="text-amber-700 italic font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight">— help the poor Worldwide.</span>
           </h1>
           
-          {/* Target Goal Section */}
           <div className="max-w-5xl mx-auto mt-20 p-12 md:p-20 bg-white border-[4px] border-amber-200 rounded-[4rem] shadow-2xl relative overflow-hidden">
              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full -mr-32 -mt-32 opacity-60"></div>
              
@@ -148,7 +140,6 @@ const App: React.FC = () => {
                <span className="block mt-8 text-orange-700 font-black text-5xl lg:text-6xl uppercase tracking-tighter">Please help us.</span>
              </p>
              
-             {/* Progress Bar */}
              <div className="mt-14 h-12 bg-stone-100 rounded-full overflow-hidden border-4 border-stone-200 shadow-2xl relative z-10">
                <motion.div 
                  initial={{ width: 0 }}
@@ -167,10 +158,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="relative z-10 container mx-auto px-6 py-24">
-        
-        {/* Videos Section */}
         <section className="mb-40">
           <div className="flex flex-col items-center">
             <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-black text-emerald-950 mb-24 text-center tracking-tighter">Global Impact & Evidence</h2>
@@ -193,7 +181,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Donation & Referral Section */}
         <section className="max-w-6xl mx-auto mb-40">
           <div className="bg-gradient-to-br from-orange-950 via-stone-900 to-orange-900 text-white rounded-[5rem] p-12 md:p-24 shadow-2xl relative overflow-hidden border-[10px] border-emerald-900/10">
             <div className="absolute top-0 right-0 p-20 opacity-5">
@@ -260,10 +247,8 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Global Social Handles */}
         <section className="mt-40 pb-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* Mission Twitter */}
             <div className="bg-white p-12 md:p-16 rounded-[4.5rem] shadow-2xl border-[4px] border-emerald-50 flex flex-col justify-between group hover:border-emerald-200 transition-colors">
                <div>
                  <div className="flex items-center gap-6 mb-10">
@@ -286,7 +271,6 @@ const App: React.FC = () => {
                </a>
             </div>
 
-            {/* Support Network */}
             <div className="bg-white p-12 md:p-16 rounded-[4.5rem] shadow-2xl border-[4px] border-amber-50 group hover:border-amber-200 transition-colors">
                <div className="flex items-center gap-6 mb-12">
                  <div className="p-6 bg-amber-500 text-stone-950 rounded-[2rem] shadow-xl group-hover:-rotate-12 transition-transform">
@@ -307,7 +291,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Action Buttons Section */}
         <div className="flex flex-col sm:flex-row justify-center gap-8 mt-20 pb-40">
            <a 
              href="https://x.com/realDonaldTrump" 
@@ -328,7 +311,6 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="relative z-10 bg-emerald-950 text-emerald-100 py-32 px-6 border-t-[16px] border-orange-600">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-24 mb-24 border-b border-white/10 pb-24">
